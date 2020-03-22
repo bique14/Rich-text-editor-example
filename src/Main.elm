@@ -30,6 +30,10 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ text "hello world"
+    div
+        [ id "editor"
+
+        -- , class "editable m-4 p-2 border-2 h-64"
+        ]
+        [ div [ id "preview" ] []
         ]

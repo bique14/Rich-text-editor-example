@@ -10,6 +10,9 @@ import Json.Decode as Decode
 port receivedContent : (String -> msg) -> Sub msg
 
 
+port wantContent : () -> Cmd msg
+
+
 type alias Model =
     { content : String }
 
@@ -43,7 +46,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SubmitContentClicked ->
-            ( model, Cmd.none )
+            ( model, wantContent () )
 
         ReceivedContent str ->
             ( { model | content = str }, Cmd.none )

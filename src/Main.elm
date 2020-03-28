@@ -63,5 +63,5 @@ view model =
             ]
             [ text "Submit" ]
         , div [ id "preview" ]
-            [ text <| model.content ]
+            []
         ]

@@ -1,39 +1,64 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as Decode
+
+
+port receivedContent : (String -> msg) -> Sub msg
 
 
 type alias Model =
-    Int
+    { content : String }
 
 
 type Msg
-    = NoOp
+    = ReceivedContent String
+    | SubmitContentClicked
 
 
-main : Program () Model Msg
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    receivedContent ReceivedContent
+
+
+main : Program Decode.Value Model Msg
 main =
-    Browser.sandbox
-        { init = 0
+    Browser.element
+        { init = init
         , view = view
         , update = update
+        , subscriptions = subscriptions
         }
 
 
-update : Msg -> Model -> Model
+init : Decode.Value -> ( Model, Cmd Msg )
+init flags =
+    ( { content = "" }, Cmd.none )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    model
+    case msg of
+        SubmitContentClicked ->
+            ( model, Cmd.none )
+
+        ReceivedContent str ->
+            ( { model | content = str }, Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
-    div
-        [ id "editor"
-
-        -- , class "editable m-4 p-2 border-2 h-64"
-        ]
-        [ div [ id "preview" ] []
+    div []
+        [ div [ id "editor" ] []
+        , button
+            [ type_ "button"
+            , class "border-2 p-1 m-2"
+            , onClick SubmitContentClicked
+            ]
+            [ text "Submit" ]
+        , div [ id "preview" ]
+            [ text <| model.content ]
         ]
